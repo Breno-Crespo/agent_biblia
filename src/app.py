@@ -15,22 +15,21 @@ from utils import criar_pdf_download, gerar_audio
 from agents import get_supervisor_chain, get_agente_web, get_agente_rag
 from login import render_login
 
-# Layout Wide para aproveitar tela, mas vamos controlar a largura com CSS
 st.set_page_config(page_title="BibliaGPT", page_icon="🕊️", layout="wide")
 
 # --- 2. LOGIN ---
 if not render_login():
     st.stop()
 
-# --- 3. CSS VISUAL (TEMA PERGAMINHO) ---
+# --- 3. CSS BLINDADO (VISÍVEL EM MODO ESCURO) ---
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@400;700&display=swap');
 
-    /* Fundo Geral (Areia Quente) */
+    /* Fundo Geral */
     .stApp { background-color: #F7F5F0; }
 
-    /* Cabeçalho Centralizado */
+    /* Cabeçalho */
     .main-header {
         text-align: center;
         padding: 20px 0;
@@ -45,32 +44,40 @@ st.markdown("""
     }
     .main-header p { color: #8C7B70; font-style: italic; }
 
-    /* Cartões de Mensagem (Bolinhas do Chat) */
+    /* --- CORREÇÃO DO TEXTO INVISÍVEL --- */
     div[data-testid="stChatMessageContent"] {
         border-radius: 12px;
         padding: 15px;
         box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         font-family: 'Lato', sans-serif;
-        font-size: 1.05rem;
+        font-size: 1.1rem;
         line-height: 1.6;
+        
+        /* FORÇA A COR DO TEXTO PARA ESCURO (IGNORA MODO NOTURNO) */
+        color: #2c3e50 !important; 
     }
     
-    /* Mensagem da IA (Fundo Branco/Creme) */
-    div[data-testid="stChatMessageContent"][data-testid="stChatMessageContent"] {
-        background-color: #FFFFFF;
-        border-left: 4px solid #C5A059; /* Borda dourada na esquerda */
+    div[data-testid="stChatMessageContent"] p, 
+    div[data-testid="stChatMessageContent"] li {
+        color: #2c3e50 !important;
     }
 
-    /* Mensagem do Usuário (Fundo Bege Escuro para contraste) */
+    /* Mensagem da IA (Fundo Branco) */
+    div[data-testid="stChatMessageContent"][data-testid="stChatMessageContent"] {
+        background-color: #FFFFFF;
+        border-left: 4px solid #C5A059;
+    }
+
+    /* Mensagem do Usuário (Fundo Bege) */
     div[data-testid="stChatMessageContent"][style*="flex-direction: row-reverse"] {
-        background-color: #EBE5CE; 
+        background-color: #EBE5CE;
     }
 
     /* Input de Texto */
     .stChatInputContainer textarea {
-        background-color: white;
+        background-color: white !important;
+        color: #333333 !important;
         border: 1px solid #C5A059;
-        border-radius: 10px;
     }
 
     /* Sidebar */
@@ -79,10 +86,17 @@ st.markdown("""
         border-right: 1px solid #DZC4B0;
     }
     
-    /* Responsividade Mobile */
+    /* Títulos na Sidebar e no Chat */
+    h1, h2, h3, h4, strong {
+        color: #5C4033 !important;
+    }
+
+    /* Mobile */
     @media (max-width: 768px) {
         .main-header h1 { font-size: 1.8rem; }
-        .stApp { background-color: #FFFBF5; } /* Um pouco mais claro no celular */
+        .stApp { background-color: #FFFBF5; }
+        /* Aumenta contraste no mobile */
+        div[data-testid="stChatMessageContent"] { border: 1px solid #E0E0E0; }
     }
 </style>
 """, unsafe_allow_html=True)
@@ -103,7 +117,6 @@ with st.sidebar:
     st.markdown("---")
     st.markdown("#### 🕒 Histórico")
     if "messages" in st.session_state:
-        # Mostra as últimas 4 perguntas
         for msg in reversed(st.session_state.messages[-8:]):
             if msg["role"] == "user":
                 txt = (msg["content"][:22] + '...') if len(msg["content"]) > 22 else msg["content"]
@@ -114,7 +127,7 @@ with st.sidebar:
         st.session_state.messages = [{"role": "assistant", "content": "A paz! Como posso ajudar seu coração hoje?"}]
         st.rerun()
 
-# --- 5. CABEÇALHO (Centralizado e Bonito) ---
+# --- 5. CABEÇALHO ---
 st.markdown(f"""
 <div class="main-header">
     <h1>Conselheira {foco}</h1>
@@ -130,11 +143,9 @@ for msg in st.session_state.messages:
     avatar = "🕊️" if msg["role"] == "assistant" else "👤"
     st.chat_message(msg["role"], avatar=avatar).write(msg["content"])
 
-# Audio Player (Discreto)
 if "ultimo_audio" in st.session_state and st.session_state.ultimo_audio:
     st.audio(st.session_state.ultimo_audio, format="audio/mp3")
 
-# Input
 prompt = st.chat_input("Escreva sua dúvida ou aflição...")
 
 if prompt:
@@ -174,7 +185,6 @@ if prompt:
             st.session_state.ultimo_audio = caminho_audio
             st.rerun()
 
-# Botão PDF (Aparece centralizado abaixo do chat)
 if "ultima_resposta" in st.session_state and st.session_state.ultima_resposta:
     try:
         pdf_bytes = criar_pdf_download(
