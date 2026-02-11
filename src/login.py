@@ -3,9 +3,7 @@ import os
 import time
 
 def render_login():
-    """
-    Renderiza login com 'Enter' funcionando e visual de Card centralizado.
-    """
+    
     if "password_correct" not in st.session_state:
         st.session_state.password_correct = False
 
@@ -50,8 +48,6 @@ def render_login():
     """, unsafe_allow_html=True)
 
     # --- LAYOUT INTELIGENTE ---
-    # No PC: [Espaço, Cartão, Espaço]. No Mobile, o Streamlit empilha tudo.
-    # Usamos [1, 1, 1] no PC para o cartão ocupar apenas 1/3 da tela (centralizado).
     col1, col2, col3 = st.columns([1, 0.8, 1]) 
 
     with col2:
@@ -59,13 +55,13 @@ def render_login():
         <div class="login-card">
             <h1 style="margin:0; font-size: 50px;">🕊️</h1>
             <h2 style="color: #5C4033; font-family: serif; margin-top: 10px;">Bem-vindo(a)</h2>
-            <p style="color: #8D8D8D;">BibliaGPT • Acesso Restrito</p>
+            <p style="color: #8D8D8D;">Féllowers • Acesso Restrito</p>
         </div>
         """, unsafe_allow_html=True)
         
-        # --- FORMULÁRIO (ISSO FAZ O ENTER FUNCIONAR) ---
+        # --- FORMULÁRIO ---
         with st.form("login_form"):
-            senha_digitada = st.text_input("Senha", type="password", placeholder="Digite sua senha aqui...", label_visibility="collapsed")
+            senha_digitada = st.text_input("Senha", type="password", placeholder="Digite sua senha aqui", label_visibility="collapsed")
             
             # Botão de Enviar dentro do form
             submit_button = st.form_submit_button("Entrar no Santuário")

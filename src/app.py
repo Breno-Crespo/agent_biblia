@@ -3,10 +3,10 @@ import streamlit as st
 from dotenv import load_dotenv
 
 # --- 1. CONFIGURAÇÃO DE AMBIENTE ---
-load_dotenv(override=True)
+load_dotenv(override=True) # Carrega variáveis do .env, sobrescrevendo se já existirem
 os.environ["LANGCHAIN_TRACING_V2"] = "false"
 
-# Ponte de Segurança para Nuvem (Secrets -> Environ)
+# Ponte de Segurança para Nuvem
 if "GROQ_API_KEY" in st.secrets:
     os.environ["GROQ_API_KEY"] = st.secrets["GROQ_API_KEY"]
 if "PINECONE_API_KEY" in st.secrets:
@@ -18,7 +18,7 @@ from agents import get_supervisor_chain, get_agente_web, get_agente_rag
 from login import render_login
 
 # --- 2. CONFIGURAÇÃO DA PÁGINA ---
-st.set_page_config(page_title="BibliaGPT", page_icon="🕊️", layout="wide")
+st.set_page_config(page_title="Féllowers", page_icon="🕊️", layout="wide")
 
 # --- 3. VERIFICAÇÃO DE LOGIN ---
 if not render_login():

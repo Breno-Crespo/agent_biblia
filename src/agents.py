@@ -1,12 +1,12 @@
-from langchain_groq import ChatGroq
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.output_parsers import StrOutputParser
-from langchain_community.tools import DuckDuckGoSearchRun
-from langchain_core.messages import SystemMessage, HumanMessage
-from rag_engine import get_retriever
+from langchain_groq import ChatGroq 
+from langchain_core.prompts import ChatPromptTemplate # Serve para criar prompts estruturados.
+from langchain_core.output_parsers import StrOutputParser # Para garantir que a saída seja sempre texto simples.
+from langchain_community.tools import DuckDuckGoSearchRun # Ferramenta de busca web (atualizada e mais robusta que SerpAPI).
+from langchain_core.messages import SystemMessage, HumanMessage # Para estruturar o histórico de mensagens do chat.
+from rag_engine import get_retriever # Importa a função do RAG Engine para usar o retriever do Pinecone.
 
 def get_supervisor_chain():
-    """Classifica a intenção do usuário."""
+    # Classifica a intenção do usuário
     llm = ChatGroq(model_name="llama-3.3-70b-versatile", temperature=0)
     
     system = """Você é um classificador. Responda APENAS uma das palavras abaixo:
@@ -17,7 +17,7 @@ def get_supervisor_chain():
     return ChatPromptTemplate.from_messages([("system", system), ("human", "{input}")]) | llm | StrOutputParser()
 
 def get_agente_web(pergunta, chat_history, foco):
-    """Busca informações na internet e aplica uma lente cristã."""
+    # Busca informações na internet e aplica uma lente cristã.
     search = DuckDuckGoSearchRun()
     try:
         resultados = search.run(pergunta)
@@ -47,7 +47,7 @@ def get_agente_rag(rota, pergunta, chat_history, foco):
         nome = f"Conselheira {foco}"
 
         if foco == "Devocional":
-            # MUDANÇA: Instruções de Neutralidade de Gênero
+            
             prompt_persona = """Você é uma Mentora Espiritual Cristã (Mulher), sábia, madura e acolhedora.
             
             ESTILO: Conversa respeitosa e carinhosa.

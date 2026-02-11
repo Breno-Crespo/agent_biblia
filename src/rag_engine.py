@@ -1,9 +1,9 @@
-import os
-import streamlit as st  # <--- NOVO IMPORT
-from dotenv import load_dotenv
-from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_pinecone import PineconeVectorStore
-from pinecone import Pinecone
+import os # Para acessar variáveis de ambiente
+import streamlit as st # Para caching e interface
+from dotenv import load_dotenv # Para carregar variáveis de ambiente do arquivo .env
+from langchain_huggingface import HuggingFaceEmbeddings # Para criar os embeddings dos textos
+from langchain_pinecone import PineconeVectorStore # Para conectar ao Pinecone e criar o buscador de vetores
+from pinecone import Pinecone # Cliente oficial do Pinecone para Python
 
 # Garante carregamento das variáveis
 load_dotenv()
@@ -11,7 +11,7 @@ load_dotenv()
 INDEX_NAME = "bibliagpt-index"
 EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 
-# Cache para os Embeddings (Eles são pesados para carregar)
+# Cache para os Embeddings (Não precisar recriar toda hora)
 @st.cache_resource
 def get_embeddings():
     return HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
@@ -21,7 +21,7 @@ def get_pinecone_client():
     if not api_key:
         print("🚨 ERRO: PINECONE_API_KEY não encontrada.")
         return None
-    return Pinecone(api_key=api_key)
+    return Pinecone(api_key=api_key) 
 
 # Cache para o Retriever (Evita reconectar no Pinecone a cada clique)
 @st.cache_resource(show_spinner=False)

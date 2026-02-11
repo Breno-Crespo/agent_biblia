@@ -8,7 +8,7 @@ class PDF(FPDF):
     def header(self):
         self.set_font('Arial', 'B', 16)
         self.set_text_color(139, 69, 19)
-        self.cell(0, 10, 'BibliaGPT - Orientacao Espiritual', 0, 1, 'C')
+        self.cell(0, 10, 'Féllowers - Orientação Espiritual', 0, 1, 'C')
         self.ln(5)
     
     def footer(self):
