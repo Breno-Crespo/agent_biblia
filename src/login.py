@@ -55,7 +55,7 @@ def render_login():
         <div class="login-card">
             <h1 style="margin:0; font-size: 50px;">🕊️</h1>
             <h2 style="color: #5C4033; font-family: serif; margin-top: 10px;">Bem-vindo(a)</h2>
-            <p style="color: #8D8D8D;">Féllowers • Acesso Restrito</p>
+            <p style="color: #8D8D8D;"> Féllowers • Acesso Restrito</p>
         </div>
         """, unsafe_allow_html=True)
         
